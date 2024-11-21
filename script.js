@@ -1,15 +1,17 @@
 let lastNotifyTime = 0;  // 上次通知时间（时间戳）
 let countdownTimer;      // 倒计时定时器变量
 let countdown = 0;       // Countdown time
+let notificationCount = 0; // Track how many notifications have been sent
 
-// Initialize the countdown state on page load
+// Initialize the notification state on page load
 window.onload = function () {
-    // Retrieve the stored countdown state from localStorage
-    const savedState = localStorage.getItem('countdownState');
+    // Retrieve the stored state from localStorage
+    const savedState = localStorage.getItem('notificationState');
     
     if (savedState) {
         const parsedState = JSON.parse(savedState);
         countdown = parsedState.countdown;
+        notificationCount = parsedState.notificationCount;
         
         // If countdown is greater than 0, set the button state and start the countdown
         if (countdown > 0) {
@@ -35,16 +37,18 @@ function notifyOwner() {
         return;
     }
 
-    // Disable the button and start the countdown
+    // Disable the button and calculate the countdown for the next notification
     const notifyButton = document.querySelector(".notify-btn");
     notifyButton.disabled = true;
-    notifyButton.textContent = "重新发送（60秒）";
     
-    countdown = 60;  // Set countdown to 60 seconds
+    // Calculate delay: First 1 minute, then add 2 minutes, 4 minutes, etc.
+    countdown = 60 + (notificationCount * 2 * 60);  // 1 minute + (notificationCount * 2 minutes)
+
+    notificationCount++;  // Increase the notification count
     startCountdown(countdown);
     
-    // Store countdown state in localStorage
-    localStorage.setItem('countdownState', JSON.stringify({ countdown: countdown }));
+    // Store the state in localStorage
+    localStorage.setItem('notificationState', JSON.stringify({ countdown: countdown, notificationCount: notificationCount }));
 
     // Send the notification via fetch
     fetch("https://wxpusher.zjiecode.com/api/send/message", {
@@ -66,7 +70,7 @@ function notifyOwner() {
                 text: '车主已收到您的通知。',
                 position: 'top',
                 toast: true,
-                timer: 5000,
+                timer: 2000,
                 showConfirmButton: false
             });
             lastNotifyTime = currentTime;  // 更新最后发送时间
@@ -77,7 +81,7 @@ function notifyOwner() {
                 text: '请稍后重试。',
                 position: 'top',
                 toast: true,
-                timer: 3000,
+                timer: 2000,
                 showConfirmButton: false
             });
         }
@@ -90,7 +94,7 @@ function notifyOwner() {
             text: '通知发送出错，请检查网络连接。',
             position: 'top',
             toast: true,
-            timer: 3000,
+            timer: 2000,
             showConfirmButton: false
         });
     });
@@ -105,7 +109,7 @@ function startCountdown(initialCountdown) {
         notifyButton.textContent = `重新发送（${initialCountdown}秒）`;
         
         // Update countdown state in localStorage
-        localStorage.setItem('countdownState', JSON.stringify({ countdown: initialCountdown }));
+        localStorage.setItem('notificationState', JSON.stringify({ countdown: initialCountdown, notificationCount: notificationCount }));
 
         // If countdown reaches 0, reset the button
         if (initialCountdown <= 0) {
@@ -113,8 +117,8 @@ function startCountdown(initialCountdown) {
             notifyButton.disabled = false; // Enable the button
             notifyButton.textContent = "通知车主挪车"; // Reset the button text
             
-            // Clear the stored state
-            localStorage.removeItem('countdownState');
+            // Clear the stored state after countdown ends
+            localStorage.removeItem('notificationState');
         }
     }, 1000);  // Update every second
 }
