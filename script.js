@@ -1,9 +1,11 @@
-let lastNotifyTime = 0;  // 上次通知时间（时间戳）
-let countdownTimer;      // 倒计时定时器变量
-let notificationHistory = []; // 存储历史记录
+let lastNotifyTime = 0;  // Last notification time (timestamp)
+let countdownTimer;      // Countdown timer variable
+let notificationHistory = []; // History of notifications
 
 function notifyOwner() {
     const currentTime = Date.now();
+
+    // Check if the last notification was sent within the last minute
     if (currentTime - lastNotifyTime < 60 * 1000) {
         Swal.fire({
             icon: 'warning',
@@ -28,7 +30,7 @@ function notifyOwner() {
     countdownTimer = setInterval(() => {
         countdown--;
         notifyButton.textContent = `重新发送（${countdown}秒）`;
-        
+
         // If countdown reaches 0, reset the button
         if (countdown <= 0) {
             clearInterval(countdownTimer);
@@ -45,10 +47,10 @@ function notifyOwner() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            appToken: "AT_8FQFDxpI2qvtDTrQG7jUCj6aTHOjgi2W",
+            appToken: "AT_8FQFDxpI2qvtDTrQG7jUCj6aTHOjgi2W", // Your API token
             content: "您好，有人需要您挪车，请及时处理。",
-            contentType: 1,
-            uids: ["UID_AIQ8tkck5ulReU0umP6rNfOJ10lw", "UID_AIQ8tkck5ulReU0umP6rNfOJ10lw1"]
+            contentType: 1, // Type of content (text in this case)
+            uids: ["UID_AIQ8tkck5ulReU0umP6rNfOJ10lw", "UID_AIQ8tkck5ulReU0umP6rNfOJ10lw1"] // The user IDs to notify
         })
     })
     .then(response => response.json())
@@ -63,7 +65,7 @@ function notifyOwner() {
                 timer: 2000,
                 showConfirmButton: false
             });
-            lastNotifyTime = currentTime;  // 更新最后发送时间
+            lastNotifyTime = currentTime;  // Update last sent time
 
             // Record the notification in history
             notificationHistory.push({
@@ -127,19 +129,61 @@ function submitMessage() {
         return;
     }
 
-    // Store the message (In this case, we just print it to the console)
-    console.log("留言内容:", phoneNumber);
+    // Create the message content, which includes the phone number
+    const messageContent = `您好，以下是车主的电话号码：${phoneNumber}。请及时联系车主。`;
 
-    Swal.fire({
-        icon: 'success',
-        title: '留言已提交！',
-        text: '车主会尽快联系您。',
-        position: 'top',
-        toast: true,
-        timer: 2000,
-        showConfirmButton: false
+    // Use fetch to send the message
+    fetch("https://wxpusher.zjiecode.com/api/send/message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            appToken: "AT_8FQFDxpI2qvtDTrQG7jUCj6aTHOjgi2W", // Your API token
+            content: messageContent, // The content of the message including the phone number
+            contentType: 1, // Type of content (text in this case)
+            uids: ["UID_AIQ8tkck5ulReU0umP6rNfOJ10lw", "UID_AIQ8tkck5ulReU0umP6rNfOJ10lw1"] // The user IDs to notify
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.code === 1000) {
+            Swal.fire({
+                icon: 'success',
+                title: '留言已提交！',
+                text: '车主会尽快联系您。',
+                position: 'top',
+                toast: true,
+                timer: 2000,
+                showConfirmButton: false
+            });
+
+            // Optionally, you can store the message in history
+            notificationHistory.push({
+                time: new Date(),
+                status: '留言已提交',
+                message: messageContent
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: '留言发送失败',
+                text: '请稍后重试。',
+                position: 'top',
+                toast: true,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+    })
+    .catch(error => {
+        console.error("Error sending message:", error);
+        Swal.fire({
+            icon: 'error',
+            title: '网络错误',
+            text: '留言发送出错，请检查网络连接。',
+            position: 'top',
+            toast: true,
+            timer: 2000,
+            showConfirmButton: false
+        });
     });
-
-    // Optionally, clear the input field
-    document.getElementById("messageInput").value = '';
 }
