@@ -2,12 +2,32 @@ let lastNotifyTime = 0;  // 上次通知时间（时间戳）
 let countdownTimer;      // 倒计时定时器变量
 let countdown = 0;       // Countdown time
 let notificationCount = 0; // Track how many notifications have been sent
+let lastResetTime = 0;    // The timestamp of the last reset
 
 // Initialize the notification state on page load
 window.onload = function () {
     // Retrieve the stored state from localStorage
     const savedState = localStorage.getItem('notificationState');
+    const savedLastResetTime = localStorage.getItem('lastResetTime');
     
+    // If there's a last reset timestamp in localStorage, check if an hour has passed
+    if (savedLastResetTime) {
+        lastResetTime = parseInt(savedLastResetTime);
+        const currentTime = Date.now();
+        
+        // If an hour has passed since the last reset, reset the notification count
+        if (currentTime - lastResetTime >= 60 * 60 * 1000) {
+            notificationCount = 0;
+            lastResetTime = currentTime; // Update last reset time
+            localStorage.setItem('lastResetTime', lastResetTime); // Store the new reset time
+        }
+    } else {
+        // If no reset timestamp exists, initialize it
+        lastResetTime = Date.now();
+        localStorage.setItem('lastResetTime', lastResetTime);
+    }
+
+    // Retrieve the stored notification count and countdown state from localStorage
     if (savedState) {
         const parsedState = JSON.parse(savedState);
         countdown = parsedState.countdown;
@@ -57,8 +77,9 @@ function notifyOwner() {
     notificationCount++;  // Increase the notification count
     startCountdown(countdown);
     
-    // Store the state in localStorage
+    // Update last reset time and notification count in localStorage
     localStorage.setItem('notificationState', JSON.stringify({ countdown: countdown, notificationCount: notificationCount }));
+    localStorage.setItem('lastResetTime', lastResetTime); // Ensure lastResetTime is stored
 
     // Send the notification via fetch
     fetch("https://wxpusher.zjiecode.com/api/send/message", {
