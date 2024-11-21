@@ -10,19 +10,13 @@
 <body>
     <div class="container">
         <h1>通知车主挪车</h1>
-        <p>如需通知车主，请点击以下按钮</p>
+        <p>如需存储消息，请点击以下按钮</p>
+        <button class="notify-btn" onclick="storeMessage()">收纳消息</button>
+        <button class="call-btn" onclick="callOwner()">拨打车主电话</button>
 
-        <!-- Collapsible Section for Sending Notification -->
-        <button class="toggle-btn" onclick="toggleNotificationSection()">发送通知</button>
-
-        <div id="notification-section" class="notification-section">
-            <button class="notify-btn" onclick="notifyOwner()">通知车主挪车</button>
-            <button class="call-btn" onclick="callOwner()">拨打车主电话</button>
-        </div>
-
-        <!-- History Section -->
+        <!-- 历史记录展示 -->
         <div id="history-container">
-            <h3>已发送通知:</h3>
+            <h3>消息记录:</h3>
             <ul id="history-list"></ul>
         </div>
     </div>
