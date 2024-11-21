@@ -1,6 +1,6 @@
 let lastNotifyTime = 0;  // 上次通知时间（时间戳）
 let countdownTimer;      // 倒计时定时器变量
-let countdown = 0;       // Countdown time
+let countdown = 0;       // Countdown time in seconds
 let notificationCount = 0; // Track how many notifications have been sent
 
 // Initialize the notification state on page load
@@ -16,22 +16,22 @@ window.onload = function () {
         // If countdown is greater than 0, set the button state and start the countdown
         if (countdown > 0) {
             const notifyButton = document.querySelector(".notify-btn");
-            notifyButton.disabled = true;
-            startCountdown(countdown);
+            notifyButton.disabled = true;  // Disable button during countdown
+            startCountdown(countdown);  // Start countdown
         }
     }
 
-    // Listen to visibility change events to resume countdown
+    // Start or resume the countdown when the page is focused (in case the page was in background)
     document.addEventListener("visibilitychange", function () {
         if (!document.hidden) {
-            // If the page comes back into focus, resume countdown
             if (countdown > 0) {
-                startCountdown(countdown);
+                startCountdown(countdown);  // Resume countdown when the page is visible
             }
         }
     });
 };
 
+// Notify the car owner
 function notifyOwner() {
     const currentTime = Date.now();
     if (currentTime - lastNotifyTime < 60 * 1000) {
@@ -110,6 +110,7 @@ function notifyOwner() {
     });
 }
 
+// Start the countdown
 function startCountdown(initialCountdown) {
     const notifyButton = document.querySelector(".notify-btn");
 
@@ -123,7 +124,7 @@ function startCountdown(initialCountdown) {
 
         // If countdown reaches 0, reset the button
         if (initialCountdown <= 0) {
-            clearInterval(countdownTimer);
+            clearInterval(countdownTimer); // Stop the timer
             notifyButton.disabled = false; // Enable the button
             notifyButton.textContent = "通知车主挪车"; // Reset the button text
             
@@ -133,6 +134,7 @@ function startCountdown(initialCountdown) {
     }, 1000);  // Update every second
 }
 
+// When calling the car owner
 function callOwner() {
     window.location.href = "tel:17896021990";
 }
