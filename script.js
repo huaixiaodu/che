@@ -20,7 +20,17 @@ window.onload = function () {
             startCountdown(countdown);
         }
     }
-}
+
+    // Listen to visibility change events to resume countdown
+    document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) {
+            // If the page comes back into focus, resume countdown
+            if (countdown > 0) {
+                startCountdown(countdown);
+            }
+        }
+    });
+};
 
 function notifyOwner() {
     const currentTime = Date.now();
@@ -102,7 +112,7 @@ function notifyOwner() {
 
 function startCountdown(initialCountdown) {
     const notifyButton = document.querySelector(".notify-btn");
-    
+
     // Start the countdown timer
     countdownTimer = setInterval(() => {
         initialCountdown--;
@@ -124,6 +134,5 @@ function startCountdown(initialCountdown) {
 }
 
 function callOwner() {
-    // Directly initiate the phone call using the tel: link
     window.location.href = "tel:17896021990";
 }
