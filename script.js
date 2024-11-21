@@ -62,7 +62,7 @@ function notifyOwner() {
                 text: '车主已收到您的通知。',
                 position: 'top',
                 toast: true,
-                timer: 2000,
+                timer: 5000,
                 showConfirmButton: false
             });
             lastNotifyTime = currentTime;  // Update last sent time
@@ -79,7 +79,7 @@ function notifyOwner() {
                 text: '请稍后重试。',
                 position: 'top',
                 toast: true,
-                timer: 2000,
+                timer: 3000,
                 showConfirmButton: false
             });
 
@@ -97,7 +97,7 @@ function notifyOwner() {
             text: '通知发送出错，请检查网络连接。',
             position: 'top',
             toast: true,
-            timer: 2000,
+            timer: 3000,
             showConfirmButton: false
         });
 
@@ -123,14 +123,14 @@ function submitMessage() {
             text: '请输入11位有效的电话号码。',
             position: 'top',
             toast: true,
-            timer: 2000,
+            timer: 5000,
             showConfirmButton: false
         });
         return;
     }
 
     // Create the message content, which includes the phone number
-    const messageContent = `您好，以下是车主的电话号码：${phoneNumber}。请及时联系车主。`;
+    const messageContent = `电话号码：${phoneNumber}请及时联系`;
 
     // Use fetch to send the message
     fetch("https://wxpusher.zjiecode.com/api/send/message", {
@@ -152,7 +152,7 @@ function submitMessage() {
                 text: '车主会尽快联系您。',
                 position: 'top',
                 toast: true,
-                timer: 2000,
+                timer: 5000,
                 showConfirmButton: false
             });
 
@@ -169,7 +169,7 @@ function submitMessage() {
                 text: '请稍后重试。',
                 position: 'top',
                 toast: true,
-                timer: 2000,
+                timer: 3000,
                 showConfirmButton: false
             });
         }
@@ -182,7 +182,7 @@ function submitMessage() {
             text: '留言发送出错，请检查网络连接。',
             position: 'top',
             toast: true,
-            timer: 2000,
+            timer: 3000,
             showConfirmButton: false
         });
     });
