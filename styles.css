@@ -1,96 +1,98 @@
-/* 通用样式，设置盒子模型为border-box，清除默认间距 */
-* { 
-    box-sizing: border-box; 
-    margin: 0; 
-    padding: 0; 
+/* 全局样式 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-/* 设置页面背景和文字样式 */
-body { 
-    font-family: Arial, sans-serif; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    height: 100vh; 
-    background: #f0f2f5; /* 背景颜色柔和 */
-    color: #333; /* 文字颜色 */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: #f0f2f5;
+    color: #333;
     padding: 10px;
 }
 
-/* 美化容器 */
-.container { 
-    text-align: center; 
-    padding: 20px; 
-    width: 100%; 
-    max-width: 400px;  /* 宽度限制 */
-    border-radius: 8px;  /* 圆角 */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);  /* 轻微阴影 */
-    background: #fff;  /* 背景为白色 */
-    margin-top: 20px;  /* 上边距 */
-    overflow: hidden;  /* 防止内容溢出 */
-}
-
-/* 标题样式 */
-h1 { 
-    font-size: 22px; 
-    margin-bottom: 15px; 
-    color: #007bff;  /* 蓝色标题 */
-    font-weight: bold;
-}
-
-/* 段落文字样式 */
-p { 
-    margin-bottom: 25px; 
-    font-size: 16px; 
-    color: #555;  /* 文字颜色 */
+/* 容器样式 */
+.container {
+    text-align: center;
+    padding: 20px;
+    width: 100%;
+    max-width: 350px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background: #fff;
+    margin-top: 20px;
 }
 
 /* 按钮样式 */
-button { 
-    width: 100%; 
-    padding: 12px; 
-    margin: 10px 0; 
-    font-size: 16px; 
-    font-weight: bold; 
-    color: #fff; 
-    border: none; 
-    border-radius: 6px; 
-    cursor: pointer; 
-    transition: background 0.3s ease, transform 0.2s;  /* 背景色渐变和按钮点击效果 */
+button {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
 }
 
-/* 通知按钮样式 */
-.notify-btn { 
-    background: #28a745;  /* 绿色背景 */
+.notify-btn {
+    background: #28a745;
 }
 
-.notify-btn:hover { 
-    background: #218838;  /* 悬停时更深的绿色 */
-    transform: scale(1.05);  /* 按钮放大效果 */
+.notify-btn:hover {
+    background: #218838;
 }
 
-/* 拨打按钮样式 */
-.call-btn { 
-    background: #17a2b8;  /* 蓝色背景 */
+.call-btn {
+    background: #17a2b8;
 }
 
-.call-btn:hover { 
-    background: #138496;  /* 悬停时更深的蓝色 */
-    transform: scale(1.05);  /* 按钮放大效果 */
+.call-btn:hover {
+    background: #138496;
 }
 
-/* 媒体查询：为移动设备优化布局 */
-@media (max-width: 480px) {
-    .container { 
-        max-width: 90%;  /* 屏幕小于480px时，容器宽度调整 */
-        padding: 15px;
-    }
+/* 历史记录容器样式 */
+#history-container {
+    margin-top: 20px;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
+    overflow-y: auto;
+}
 
-    h1 { 
-        font-size: 18px;  /* 小屏幕下标题字体稍微小一些 */
-    }
+#history-container h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #007bff;
+}
 
-    p { 
-        font-size: 14px;  /* 调整段落文字大小 */
-    }
+#history-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+#history-list li {
+    background: #e9ecef;
+    margin: 8px 0;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* 清除历史记录按钮 */
+.clear-btn {
+    background: #dc3545;
+}
+
+.clear-btn:hover {
+    background: #c82333;
 }
