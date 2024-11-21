@@ -1,6 +1,6 @@
 let lastNotifyTime = 0;  // 上次通知时间（时间戳）
 let countdownTimer;      // 倒计时定时器变量
-let countdown = 0;       // Countdown time in seconds
+let countdown = 0;       // Countdown time
 let notificationCount = 0; // Track how many notifications have been sent
 
 // Initialize the notification state on page load
@@ -16,22 +16,22 @@ window.onload = function () {
         // If countdown is greater than 0, set the button state and start the countdown
         if (countdown > 0) {
             const notifyButton = document.querySelector(".notify-btn");
-            notifyButton.disabled = true;  // Disable button during countdown
-            startCountdown(countdown);  // Start countdown
+            notifyButton.disabled = true;
+            startCountdown(countdown);
         }
     }
 
-    // Start or resume the countdown when the page is focused (in case the page was in background)
+    // Listen to visibility change events to resume countdown
     document.addEventListener("visibilitychange", function () {
         if (!document.hidden) {
+            // If the page comes back into focus, resume countdown
             if (countdown > 0) {
-                startCountdown(countdown);  // Resume countdown when the page is visible
+                startCountdown(countdown);
             }
         }
     });
 };
 
-// Notify the car owner
 function notifyOwner() {
     const currentTime = Date.now();
     if (currentTime - lastNotifyTime < 60 * 1000) {
@@ -51,8 +51,8 @@ function notifyOwner() {
     const notifyButton = document.querySelector(".notify-btn");
     notifyButton.disabled = true;
     
-    // Calculate delay: First 1 minute, then add 2 minutes, 4 minutes, etc.
-    countdown = 60 + (notificationCount * 2 * 60);  // 1 minute + (notificationCount * 2 minutes)
+    // Calculate delay: First 1 minute, then add 1 minute each time
+    countdown = 60 + (notificationCount * 60);  // 1 minute + (notificationCount * 1 minute)
 
     notificationCount++;  // Increase the notification count
     startCountdown(countdown);
@@ -80,7 +80,7 @@ function notifyOwner() {
                 text: '车主已收到您的通知。',
                 position: 'top',
                 toast: true,
-                timer: 2000,
+                timer: 5000,
                 showConfirmButton: false
             });
             lastNotifyTime = currentTime;  // 更新最后发送时间
@@ -91,7 +91,7 @@ function notifyOwner() {
                 text: '请稍后重试。',
                 position: 'top',
                 toast: true,
-                timer: 2000,
+                timer: 3000,
                 showConfirmButton: false
             });
         }
@@ -104,13 +104,12 @@ function notifyOwner() {
             text: '通知发送出错，请检查网络连接。',
             position: 'top',
             toast: true,
-            timer: 2000,
+            timer: 3000,
             showConfirmButton: false
         });
     });
 }
 
-// Start the countdown
 function startCountdown(initialCountdown) {
     const notifyButton = document.querySelector(".notify-btn");
 
@@ -124,7 +123,7 @@ function startCountdown(initialCountdown) {
 
         // If countdown reaches 0, reset the button
         if (initialCountdown <= 0) {
-            clearInterval(countdownTimer); // Stop the timer
+            clearInterval(countdownTimer);
             notifyButton.disabled = false; // Enable the button
             notifyButton.textContent = "通知车主挪车"; // Reset the button text
             
@@ -134,7 +133,6 @@ function startCountdown(initialCountdown) {
     }, 1000);  // Update every second
 }
 
-// When calling the car owner
 function callOwner() {
     window.location.href = "tel:17896021990";
 }
