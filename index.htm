@@ -4,38 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>通知车主挪车</title>
-
     <!-- 引入 SweetAlert2 的 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.1/dist/sweetalert2.min.css">
-
-    <!-- 外部 CSS 文件 -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()">切换暗夜模式</button>
+
     <div class="container">
         <h1>通知车主挪车</h1>
         <p>如需通知车主，请点击以下按钮</p>
-        
-        <!-- 自定义消息输入框 -->
-        <textarea id="customMessage" placeholder="请输入您的消息..." rows="4"></textarea>
-        
-        <!-- 发送通知按钮 -->
         <button class="notify-btn" onclick="notifyOwner()">通知车主挪车</button>
-        
-        <!-- 拨打电话按钮 -->
         <button class="call-btn" onclick="callOwner()">拨打车主电话</button>
-
-        <!-- 收纳按钮，用于显示/隐藏历史通知 -->
-        <button class="history-btn" onclick="toggleHistory()">查看/隐藏通知记录</button>
-
-        <!-- 隐藏的消息记录区域 -->
-        <div id="history" style="display: none;"></div>
     </div>
-
-    <!-- 引入外部 JS 文件 -->
-    <script src="script.js"></script>
 
     <!-- 引入 SweetAlert2 的 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.1/dist/sweetalert2.all.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
