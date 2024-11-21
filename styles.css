@@ -16,7 +16,6 @@ body {
     padding: 10px;
 }
 
-/* 容器样式 */
 .container {
     text-align: center;
     padding: 20px;
@@ -26,6 +25,28 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     background: #fff;
     margin-top: 20px;
+}
+
+h1 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #007bff;
+}
+
+p {
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #555;
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    color: #333;
 }
 
 /* 按钮样式 */
@@ -58,17 +79,22 @@ button {
     background: #138496;
 }
 
-/* 历史记录容器样式 */
-#history-container {
+.history-btn {
+    background: #ffc107;
+    color: #fff;
+}
+
+.history-btn:hover {
+    background: #e0a800;
+}
+
+/* 消息记录区域样式 */
+#history {
     margin-top: 20px;
     padding: 10px;
-    background: #f9f9f9;
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
     max-height: 200px;
     overflow-y: auto;
 }
-
-#history-container h3 {
-    font-size: 18px;
-    margin-bottom:
