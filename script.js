@@ -2,43 +2,45 @@ let lastNotifyTime = 0;  // 上次通知时间（时间戳）
 let countdownTimer;      // 倒计时定时器变量
 let countdown = 0;       // Countdown time
 let notificationCount = 0; // Track how many notifications have been sent
-let lastResetTime = 0;    // The timestamp of the last reset
+let lastVisitTime = 0;    // The timestamp of the last visit
 
 // Initialize the notification state on page load
 window.onload = function () {
     // Retrieve the stored state from localStorage
     const savedState = localStorage.getItem('notificationState');
-    const savedLastResetTime = localStorage.getItem('lastResetTime');
+    const savedLastVisitTime = localStorage.getItem('lastVisitTime');
     
-    // If there's a last reset timestamp in localStorage, check if an hour has passed
-    if (savedLastResetTime) {
-        lastResetTime = parseInt(savedLastResetTime);
-        const currentTime = Date.now();
+    // Get the current time
+    const currentTime = Date.now();
+    
+    // If there's a last visit timestamp in localStorage, check if an hour has passed
+    if (savedLastVisitTime) {
+        lastVisitTime = parseInt(savedLastVisitTime);
         
-        // If an hour has passed since the last reset, reset the notification count
-        if (currentTime - lastResetTime >= 60 * 60 * 1000) {
-            notificationCount = 0;
-            lastResetTime = currentTime; // Update last reset time
-            localStorage.setItem('lastResetTime', lastResetTime); // Store the new reset time
+        // If an hour has passed since the last visit, reset the notification count
+        if (currentTime - lastVisitTime >= 60 * 60 * 1000) {
+            notificationCount = 0;  // Reset the notification count
+            localStorage.setItem('notificationCount', notificationCount);  // Store reset count
         }
-    } else {
-        // If no reset timestamp exists, initialize it
-        lastResetTime = Date.now();
-        localStorage.setItem('lastResetTime', lastResetTime);
     }
 
+    // Store the current time as the last visit time in localStorage
+    localStorage.setItem('lastVisitTime', currentTime);
+
     // Retrieve the stored notification count and countdown state from localStorage
-    if (savedState) {
-        const parsedState = JSON.parse(savedState);
-        countdown = parsedState.countdown;
-        notificationCount = parsedState.notificationCount;
-        
-        // If countdown is greater than 0, set the button state and start the countdown
-        if (countdown > 0) {
-            const notifyButton = document.querySelector(".notify-btn");
-            notifyButton.disabled = true;
-            startCountdown(countdown);
-        }
+    const savedNotificationCount = localStorage.getItem('notificationCount');
+    if (savedNotificationCount) {
+        notificationCount = parseInt(savedNotificationCount);
+    }
+
+    const savedStateParsed = JSON.parse(savedState || '{}');
+    countdown = savedStateParsed.countdown || 0;
+    
+    // If countdown is greater than 0, set the button state and start the countdown
+    if (countdown > 0) {
+        const notifyButton = document.querySelector(".notify-btn");
+        notifyButton.disabled = true;
+        startCountdown(countdown);
     }
 
     // Listen to visibility change events to resume countdown
@@ -76,10 +78,10 @@ function notifyOwner() {
 
     notificationCount++;  // Increase the notification count
     startCountdown(countdown);
-    
-    // Update last reset time and notification count in localStorage
+
+    // Store the new notification count and countdown state in localStorage
+    localStorage.setItem('notificationCount', notificationCount);
     localStorage.setItem('notificationState', JSON.stringify({ countdown: countdown, notificationCount: notificationCount }));
-    localStorage.setItem('lastResetTime', lastResetTime); // Ensure lastResetTime is stored
 
     // Send the notification via fetch
     fetch("https://wxpusher.zjiecode.com/api/send/message", {
@@ -101,7 +103,7 @@ function notifyOwner() {
                 text: '车主已收到您的通知。',
                 position: 'top',
                 toast: true,
-                timer: 5000,
+                timer: 2000,
                 showConfirmButton: false
             });
             lastNotifyTime = currentTime;  // 更新最后发送时间
@@ -112,7 +114,7 @@ function notifyOwner() {
                 text: '请稍后重试。',
                 position: 'top',
                 toast: true,
-                timer: 3000,
+                timer: 2000,
                 showConfirmButton: false
             });
         }
@@ -125,7 +127,7 @@ function notifyOwner() {
             text: '通知发送出错，请检查网络连接。',
             position: 'top',
             toast: true,
-            timer: 3000,
+            timer: 2000,
             showConfirmButton: false
         });
     });
