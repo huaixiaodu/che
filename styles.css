@@ -88,11 +88,16 @@ button {
     font-size: 14px;
 }
 
-/* 清除历史记录按钮 */
-.clear-btn {
-    background: #dc3545;
+/* 折叠按钮样式 */
+.toggle-btn {
+    background: #ffc107;
 }
 
-.clear-btn:hover {
-    background: #c82333;
+.toggle-btn:hover {
+    background: #e0a800;
+}
+
+/* 通知部分默认隐藏 */
+.notification-section {
+    display: none;
 }

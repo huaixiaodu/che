@@ -11,17 +11,20 @@
     <div class="container">
         <h1>通知车主挪车</h1>
         <p>如需通知车主，请点击以下按钮</p>
-        <button class="notify-btn" onclick="notifyOwner()">通知车主挪车</button>
-        <button class="call-btn" onclick="callOwner()">拨打车主电话</button>
+
+        <!-- Collapsible Section for Sending Notification -->
+        <button class="toggle-btn" onclick="toggleNotificationSection()">发送通知</button>
+
+        <div id="notification-section" class="notification-section">
+            <button class="notify-btn" onclick="notifyOwner()">通知车主挪车</button>
+            <button class="call-btn" onclick="callOwner()">拨打车主电话</button>
+        </div>
 
         <!-- History Section -->
         <div id="history-container">
             <h3>已发送通知:</h3>
             <ul id="history-list"></ul>
         </div>
-
-        <!-- Clear History Button -->
-        <button class="clear-btn" onclick="clearHistory()">清除历史记录</button>
     </div>
     
     <script src="script.js"></script>

@@ -27,6 +27,19 @@ function displayNotificationHistory() {
 // Call this function when the page loads to show any previous history
 window.onload = displayNotificationHistory;
 
+// Function to toggle visibility of the notification section
+function toggleNotificationSection() {
+    const section = document.getElementById("notification-section");
+    const currentDisplay = section.style.display;
+
+    // Toggle between showing and hiding the section
+    if (currentDisplay === "none" || currentDisplay === "") {
+        section.style.display = "block";
+    } else {
+        section.style.display = "none";
+    }
+}
+
 function notifyOwner() {
     const message = "您好，有人需要您挪车，请及时处理。"; // You can customize the message or get it from an input
     const currentTime = Date.now();
@@ -96,10 +109,4 @@ function notifyOwner() {
 
 function callOwner() {
     window.location.href = "tel:17896021990";
-}
-
-// Clear history from localStorage and update the UI
-function clearHistory() {
-    localStorage.removeItem('notificationHistory');
-    displayNotificationHistory(); // Refresh the UI
 }
