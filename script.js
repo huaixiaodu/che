@@ -66,7 +66,7 @@ function notifyOwner() {
                 text: '车主已收到您的通知。',
                 position: 'top',
                 toast: true,
-                timer: 2000,
+                timer: 5000,
                 showConfirmButton: false
             });
             lastNotifyTime = currentTime;  // 更新最后发送时间
@@ -77,7 +77,7 @@ function notifyOwner() {
                 text: '请稍后重试。',
                 position: 'top',
                 toast: true,
-                timer: 2000,
+                timer: 3000,
                 showConfirmButton: false
             });
         }
@@ -90,7 +90,7 @@ function notifyOwner() {
             text: '通知发送出错，请检查网络连接。',
             position: 'top',
             toast: true,
-            timer: 2000,
+            timer: 3000,
             showConfirmButton: false
         });
     });
