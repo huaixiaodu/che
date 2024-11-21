@@ -1,5 +1,6 @@
 let lastNotifyTime = 0;  // 上次通知时间（时间戳）
 let countdownTimer;      // 倒计时定时器变量
+let notificationHistory = []; // 存储历史记录
 
 function notifyOwner() {
     const currentTime = Date.now();
@@ -33,6 +34,9 @@ function notifyOwner() {
             clearInterval(countdownTimer);
             notifyButton.disabled = false; // Enable the button
             notifyButton.textContent = "通知车主挪车"; // Reset the button text
+
+            // Show the message input after the countdown
+            document.querySelector(".message-container").style.display = "block";
         }
     }, 1000);  // Update every second
 
@@ -56,10 +60,16 @@ function notifyOwner() {
                 text: '车主已收到您的通知。',
                 position: 'top',
                 toast: true,
-                timer: 5000,
+                timer: 2000,
                 showConfirmButton: false
             });
             lastNotifyTime = currentTime;  // 更新最后发送时间
+
+            // Record the notification in history
+            notificationHistory.push({
+                time: new Date(),
+                status: '成功',
+            });
         } else {
             Swal.fire({
                 icon: 'error',
@@ -67,8 +77,13 @@ function notifyOwner() {
                 text: '请稍后重试。',
                 position: 'top',
                 toast: true,
-                timer: 3000,
+                timer: 2000,
                 showConfirmButton: false
+            });
+
+            notificationHistory.push({
+                time: new Date(),
+                status: '失败',
             });
         }
     })
@@ -80,12 +95,51 @@ function notifyOwner() {
             text: '通知发送出错，请检查网络连接。',
             position: 'top',
             toast: true,
-            timer: 3000,
+            timer: 2000,
             showConfirmButton: false
+        });
+
+        notificationHistory.push({
+            time: new Date(),
+            status: '失败',
         });
     });
 }
 
 function callOwner() {
     window.location.href = "tel:17896021990";
+}
+
+function submitMessage() {
+    const phoneNumber = document.getElementById("messageInput").value;
+
+    // Validate phone number length
+    if (phoneNumber.length !== 11 || isNaN(phoneNumber)) {
+        Swal.fire({
+            icon: 'error',
+            title: '电话号码无效',
+            text: '请输入11位有效的电话号码。',
+            position: 'top',
+            toast: true,
+            timer: 2000,
+            showConfirmButton: false
+        });
+        return;
+    }
+
+    // Store the message (In this case, we just print it to the console)
+    console.log("留言内容:", phoneNumber);
+
+    Swal.fire({
+        icon: 'success',
+        title: '留言已提交！',
+        text: '车主会尽快联系您。',
+        position: 'top',
+        toast: true,
+        timer: 2000,
+        showConfirmButton: false
+    });
+
+    // Optionally, clear the input field
+    document.getElementById("messageInput").value = '';
 }

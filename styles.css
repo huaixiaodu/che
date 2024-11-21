@@ -72,3 +72,26 @@ button:disabled {
     background-color: #ccc;  /* Light gray color */
     cursor: not-allowed;  /* Show a "not-allowed" cursor */
 }
+
+.message-container {
+    margin-top: 20px;
+}
+
+.message-container input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.message-container button {
+    background: #ffc107;
+    color: white;
+    cursor: pointer;
+}
+
+.message-container button:hover {
+    background: #e0a800;
+}
