@@ -124,5 +124,6 @@ function startCountdown(initialCountdown) {
 }
 
 function callOwner() {
+    // Directly initiate the phone call using the tel: link
     window.location.href = "tel:17896021990";
 }
