@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- 引入 SweetAlert2 的 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.1/dist/sweetalert2.min.css">
+
+    <!-- 引入 SweetAlert2 的 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.1/dist/sweetalert2.all.min.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>通知车主挪车</title>
+    <style>
+        /* 样式同之前一致 */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: Arial, sans-serif; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            background: #f0f2f5; 
+            color: #333; 
+            padding: 10px;
+        }
+        .container { 
+            text-align: center; 
+            padding: 20px; 
+            width: 100%; 
+            max-width: 350px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+            background: #fff; 
+            margin-top: 20px;
+        }
+        h1 { 
+            font-size: 20px; 
+            margin-bottom: 15px; 
+            color: #007bff; 
+        }
+        p { 
+            margin-bottom: 15px; 
+            font-size: 14px; 
+            color: #555; 
+        }
+        button { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 8px 0; 
+            font-size: 16px; 
+            font-weight: bold; 
+            color: #fff; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            transition: background 0.3s; 
+        }
+        .notify-btn { background: #28a745; }
+        .notify-btn:disabled { background: #ccc; cursor: not-allowed; }
+        .notify-btn:hover:not(:disabled) { background: #218838; }
+        .call-btn { background: #17a2b8; }
+        .call-btn:hover { background: #138496; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>通知车主挪车</h1>
+    <p>如需通知车主，请点击以下按钮</p>
+    <button id="notify-btn" class="notify-btn" onclick="notifyOwner()">通知车主挪车</button>
+    <button class="call-btn" onclick="callOwner()">拨打车主电话</button>
+</div>
+<script>
+let lastNotifyTime = 0; // 上次通知时间（时间戳）
+let countdownInterval; // 倒计时定时器
+
+function notifyOwner() {
+    const currentTime = Date.now();
+    if (currentTime - lastNotifyTime < 60 * 1000) {
+        Swal.fire({
+            icon: 'warning',
+            title: '发送过于频繁',
+            text: '请稍后再试！',
+            position: 'top',
+            toast: true,
+            timer: 2000,
+            showConfirmButton: false
+        });
+        return;
+    }
+
+    fetch("https://wxpusher.zjiecode.com/api/send/message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            appToken: "AT_8FQFDxpI2qvtDTrQG7jUCj6aTHOjgi2W",
+            content: "您好，有人需要您挪车，请及时处理。",
+            contentType: 1,
+            uids: ["UID_AIQ8tkck5ulReU0umP6rNfOJ10lw", "UID_AIQ8tkck5ulReU0umP6rNfOJ10lw1"]
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.code === 1000) {
+            Swal.fire({
+                icon: 'success',
+                title: '通知已发送！',
+                text: '车主已收到您的通知。',
+                position: 'top',
+                toast: true,
+                timer: 2000,
+                showConfirmButton: false
+            });
+            lastNotifyTime = currentTime; // 更新最后发送时间
+            startCountdown(); // 启动倒计时
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: '通知发送失败',
+                text: '请稍后重试。',
+                position: 'top',
+                toast: true,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+    })
+    .catch(error => {
+        console.error("Error sending notification:", error);
+        Swal.fire({
+            icon: 'error',
+            title: '网络错误',
+            text: '通知发送出错，请检查网络连接。',
+            position: 'top',
+            toast: true,
+            timer: 2000,
+            showConfirmButton: false
+        });
+    });
+}
+
+function startCountdown() {
+    const btn = document.getElementById('notify-btn');
+    btn.disabled = true; // 禁用按钮
+    let countdown = 60; // 倒计时60秒
+
+    btn.textContent = `请稍候 ${countdown} 秒`;
+    countdownInterval = setInterval(() => {
+        countdown--;
+        btn.textContent = `请稍候 ${countdown} 秒`;
+        if (countdown <= 0) {
+            clearInterval(countdownInterval);
+            btn.textContent = '通知车主挪车';
+            btn.disabled = false; // 恢复按钮
+        }
+    }, 1000);
+}
+
+function callOwner() {
+    window.location.href = "tel:17896021990";
+}
+</script>
+</body>
+</html>
