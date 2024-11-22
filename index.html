@@ -3,23 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-
+    <title>通知车主挪车</title>
     <!-- 引入 SweetAlert2 的 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.1/dist/sweetalert2.min.css">
     <!-- 引入自定义样式 -->
     <link rel="stylesheet" href="styles.css">
+    <!-- 引入 Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <h1>通知车主挪车</h1>
+        <h1 id="notify-title">通知车主挪车</h1>
         <p>如需通知车主，请点击以下按钮</p>
-        <div class="button-group">
-            <button id="notify-btn" class="notify-btn">通知车主挪车</button>
-            <button class="call-btn" onclick="callOwner()">拨打车主电话</button>
-        </div>
+        <button id="notify-btn" class="notify-btn">通知车主挪车</button>
+        <button id="call-btn" class="call-btn">拨打车主电话</button>
     </div>
-
     <!-- 引入 SweetAlert2 的 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.1/dist/sweetalert2.all.min.js"></script>
     <!-- 引入自定义脚本 -->
