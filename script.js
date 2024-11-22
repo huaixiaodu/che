@@ -62,7 +62,7 @@ function notifyOwner() {
             text: '通知发送出错，请检查网络连接。',
             position: 'top',
             toast: true,
-            timer: 2000,
+            timer: 3000,
             showConfirmButton: false
         });
     });
@@ -105,4 +105,6 @@ window.onload = function () {
             startCountdown(remainingTime);
         }
     }
+    // 绑定按钮点击事件
+    notifyButton.addEventListener('click', notifyOwner);
 };
