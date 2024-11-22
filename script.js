@@ -13,7 +13,7 @@ function notifyOwner() {
             text: '请稍后再试！',
             position: 'top',
             toast: true,
-            timer: 2000,
+            timer: 3000,
             showConfirmButton: false
         });
         return;
@@ -38,7 +38,7 @@ function notifyOwner() {
                 text: '车主已收到您的通知。',
                 position: 'top',
                 toast: true,
-                timer: 2000,
+                timer: 4000,
                 showConfirmButton: false
             });
             startCountdown(60); // 启动倒计时（60秒）
@@ -49,7 +49,7 @@ function notifyOwner() {
                 text: '请稍后重试。',
                 position: 'top',
                 toast: true,
-                timer: 2000,
+                timer: 3000,
                 showConfirmButton: false
             });
         }
