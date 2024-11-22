@@ -1,10 +1,9 @@
 const notifyButton = document.getElementById('notify-btn');
 let countdownInterval;
 
-// 点击“通知车主挪车”按钮的函数
 function notifyOwner() {
     const currentTime = Date.now();
-    const cooldownEndTime = localStorage.getItem('cooldownEndTime'); // 获取冷却结束时间
+    const cooldownEndTime = localStorage.getItem('cooldownEndTime');
 
     // 如果冷却未结束，阻止发送
     if (cooldownEndTime && currentTime < cooldownEndTime) {
@@ -20,7 +19,6 @@ function notifyOwner() {
         return;
     }
 
-    // 发送请求到微信推送 API
     fetch("https://wxpusher.zjiecode.com/api/send/message", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -70,10 +68,9 @@ function notifyOwner() {
     });
 }
 
-// 启动倒计时的函数
 function startCountdown(seconds) {
-    const cooldownEndTime = Date.now() + seconds * 1000; // 计算冷却结束时间
-    localStorage.setItem('cooldownEndTime', cooldownEndTime); // 保存到 localStorage 中
+    const cooldownEndTime = Date.now() + seconds * 1000; // 设置倒计时结束时间
+    localStorage.setItem('cooldownEndTime', cooldownEndTime); // 存储到 localStorage
 
     updateButtonState(cooldownEndTime);
     countdownInterval = setInterval(() => {
@@ -81,24 +78,20 @@ function startCountdown(seconds) {
     }, 1000);
 }
 
-// 更新按钮状态和文本
 function updateButtonState(cooldownEndTime) {
-    const remainingTime = Math.ceil((cooldownEndTime - Date.now()) / 1000); // 计算剩余时间
+    const remainingTime = Math.ceil((cooldownEndTime - Date.now()) / 1000);
 
     if (remainingTime > 0) {
-        // 禁用按钮并显示剩余时间
         notifyButton.disabled = true;
         notifyButton.textContent = `请稍候 ${remainingTime} 秒`;
     } else {
-        // 启用按钮并恢复默认文本
         clearInterval(countdownInterval);
         notifyButton.disabled = false;
         notifyButton.textContent = '通知车主挪车';
-        localStorage.removeItem('cooldownEndTime'); // 倒计时结束后清除冷却时间
+        localStorage.removeItem('cooldownEndTime'); // 倒计时结束后清除
     }
 }
 
-// 拨打车主电话
 function callOwner() {
     window.location.href = "tel:17896021990";
 }
@@ -109,7 +102,7 @@ window.onload = function () {
     if (cooldownEndTime) {
         const remainingTime = Math.ceil((cooldownEndTime - Date.now()) / 1000);
         if (remainingTime > 0) {
-            startCountdown(remainingTime); // 页面刷新时继续倒计时
+            startCountdown(remainingTime);
         }
     }
     // 绑定按钮点击事件
