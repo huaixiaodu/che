@@ -70,12 +70,15 @@
     <button class="call-btn" onclick="callOwner()">拨打车主电话</button>
 </div>
 <script>
-let lastNotifyTime = 0; // 上次通知时间（时间戳）
-let countdownInterval; // 倒计时定时器
+const notifyButton = document.getElementById('notify-btn');
+let countdownInterval;
 
 function notifyOwner() {
     const currentTime = Date.now();
-    if (currentTime - lastNotifyTime < 60 * 1000) {
+    const cooldownEndTime = localStorage.getItem('cooldownEndTime');
+
+    // 如果冷却未结束，阻止发送
+    if (cooldownEndTime && currentTime < cooldownEndTime) {
         Swal.fire({
             icon: 'warning',
             title: '发送过于频繁',
@@ -110,8 +113,7 @@ function notifyOwner() {
                 timer: 2000,
                 showConfirmButton: false
             });
-            lastNotifyTime = currentTime; // 更新最后发送时间
-            startCountdown(); // 启动倒计时
+            startCountdown(60); // 启动倒计时（60秒）
         } else {
             Swal.fire({
                 icon: 'error',
@@ -138,26 +140,44 @@ function notifyOwner() {
     });
 }
 
-function startCountdown() {
-    const btn = document.getElementById('notify-btn');
-    btn.disabled = true; // 禁用按钮
-    let countdown = 60; // 倒计时60秒
+function startCountdown(seconds) {
+    const cooldownEndTime = Date.now() + seconds * 1000; // 设置倒计时结束时间
+    localStorage.setItem('cooldownEndTime', cooldownEndTime); // 存储到 localStorage
 
-    btn.textContent = `请稍候 ${countdown} 秒`;
+    updateButtonState(cooldownEndTime);
     countdownInterval = setInterval(() => {
-        countdown--;
-        btn.textContent = `请稍候 ${countdown} 秒`;
-        if (countdown <= 0) {
-            clearInterval(countdownInterval);
-            btn.textContent = '通知车主挪车';
-            btn.disabled = false; // 恢复按钮
-        }
+        updateButtonState(cooldownEndTime);
     }, 1000);
+}
+
+function updateButtonState(cooldownEndTime) {
+    const remainingTime = Math.ceil((cooldownEndTime - Date.now()) / 1000);
+
+    if (remainingTime > 0) {
+        notifyButton.disabled = true;
+        notifyButton.textContent = `请稍候 ${remainingTime} 秒`;
+    } else {
+        clearInterval(countdownInterval);
+        notifyButton.disabled = false;
+        notifyButton.textContent = '通知车主挪车';
+        localStorage.removeItem('cooldownEndTime'); // 倒计时结束后清除
+    }
 }
 
 function callOwner() {
     window.location.href = "tel:17896021990";
 }
+
+// 页面加载时检查是否需要继续倒计时
+window.onload = function () {
+    const cooldownEndTime = localStorage.getItem('cooldownEndTime');
+    if (cooldownEndTime) {
+        const remainingTime = Math.ceil((cooldownEndTime - Date.now()) / 1000);
+        if (remainingTime > 0) {
+            startCountdown(remainingTime);
+        }
+    }
+};
 </script>
 </body>
 </html>
