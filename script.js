@@ -87,7 +87,7 @@ function updateButtonState(cooldownEndTime) {
     } else {
         clearInterval(countdownInterval);
         notifyButton.disabled = false;
-        notifyButton.textContent = '通知车主挪车';
+        notifyButton.textContent = '微信通知';
         localStorage.removeItem('cooldownEndTime'); // 倒计时结束后清除
     }
 }
