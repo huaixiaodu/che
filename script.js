@@ -1,6 +1,8 @@
 const notifyButton = document.getElementById('notify-btn');
+const callButton = document.getElementById('call-btn');
 let countdownInterval;
 
+// 通知车主挪车功能
 function notifyOwner() {
     const currentTime = Date.now();
     const cooldownEndTime = localStorage.getItem('cooldownEndTime');
@@ -26,7 +28,7 @@ function notifyOwner() {
             appToken: "AT_8FQFDxpI2qvtDTrQG7jUCj6aTHOjgi2W",
             content: "您好，有人需要您挪车，请及时处理。",
             contentType: 1,
-            uids: ["UID_AIQ8tkck5ulReU0umP6rNfOJ10lw", "UID_AIQ8tkck5ulReU0umP6rNfOJ10lw1"]
+            uids: ["UID_AIQ8tkck5ulReU0umP6rNfOJ10lw"]
         })
     })
     .then(response => response.json())
@@ -68,9 +70,10 @@ function notifyOwner() {
     });
 }
 
+// 启动倒计时
 function startCountdown(seconds) {
-    const cooldownEndTime = Date.now() + seconds * 1000; // 设置倒计时结束时间
-    localStorage.setItem('cooldownEndTime', cooldownEndTime); // 存储到 localStorage
+    const cooldownEndTime = Date.now() + seconds * 1000;
+    localStorage.setItem('cooldownEndTime', cooldownEndTime); // 保存冷却结束时间
 
     updateButtonState(cooldownEndTime);
     countdownInterval = setInterval(() => {
@@ -78,6 +81,7 @@ function startCountdown(seconds) {
     }, 1000);
 }
 
+// 更新按钮状态
 function updateButtonState(cooldownEndTime) {
     const remainingTime = Math.ceil((cooldownEndTime - Date.now()) / 1000);
 
@@ -88,10 +92,11 @@ function updateButtonState(cooldownEndTime) {
         clearInterval(countdownInterval);
         notifyButton.disabled = false;
         notifyButton.textContent = '通知车主挪车';
-        localStorage.removeItem('cooldownEndTime'); // 倒计时结束后清除
+        localStorage.removeItem('cooldownEndTime');
     }
 }
 
+// 拨打车主电话功能
 function callOwner() {
     window.location.href = "tel:17896021990";
 }
@@ -107,4 +112,5 @@ window.onload = function () {
     }
     // 绑定按钮点击事件
     notifyButton.addEventListener('click', notifyOwner);
+    callButton.addEventListener('click', callOwner);
 };
