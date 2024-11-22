@@ -1,183 +1,28 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <!-- 引入 SweetAlert2 的 CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.1/dist/sweetalert2.min.css">
-
-    <!-- 引入 SweetAlert2 的 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.1/dist/sweetalert2.all.min.js"></script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>通知车主挪车</title>
-    <style>
-        /* 样式同之前一致 */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-            font-family: Arial, sans-serif; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            height: 100vh; 
-            background: #f0f2f5; 
-            color: #333; 
-            padding: 10px;
-        }
-        .container { 
-            text-align: center; 
-            padding: 20px; 
-            width: 100%; 
-            max-width: 350px; 
-            border-radius: 8px; 
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
-            background: #fff; 
-            margin-top: 20px;
-        }
-        h1 { 
-            font-size: 20px; 
-            margin-bottom: 15px; 
-            color: #007bff; 
-        }
-        p { 
-            margin-bottom: 15px; 
-            font-size: 14px; 
-            color: #555; 
-        }
-        button { 
-            width: 100%; 
-            padding: 12px; 
-            margin: 8px 0; 
-            font-size: 16px; 
-            font-weight: bold; 
-            color: #fff; 
-            border: none; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            transition: background 0.3s; 
-        }
-        .notify-btn { background: #28a745; }
-        .notify-btn:disabled { background: #ccc; cursor: not-allowed; }
-        .notify-btn:hover:not(:disabled) { background: #218838; }
-        .call-btn { background: #17a2b8; }
-        .call-btn:hover { background: #138496; }
-    </style>
+
+    <!-- 引入 SweetAlert2 的 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.1/dist/sweetalert2.min.css">
+    <!-- 引入自定义样式 -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="container">
-    <h1>通知车主挪车</h1>
-    <p>如需通知车主，请点击以下按钮</p>
-    <button id="notify-btn" class="notify-btn" onclick="notifyOwner()">通知车主挪车</button>
-    <button class="call-btn" onclick="callOwner()">拨打车主电话</button>
-</div>
-<script>
-const notifyButton = document.getElementById('notify-btn');
-let countdownInterval;
+    <div class="container">
+        <h1>通知车主挪车</h1>
+        <p>需要通知车主挪车？快速发送提醒或拨打车主电话。</p>
+        <div class="button-group">
+            <button id="notify-btn" class="notify-btn">通知车主挪车</button>
+            <button class="call-btn" onclick="callOwner()">拨打车主电话</button>
+        </div>
+    </div>
 
-function notifyOwner() {
-    const currentTime = Date.now();
-    const cooldownEndTime = localStorage.getItem('cooldownEndTime');
-
-    // 如果冷却未结束，阻止发送
-    if (cooldownEndTime && currentTime < cooldownEndTime) {
-        Swal.fire({
-            icon: 'warning',
-            title: '发送过于频繁',
-            text: '请稍后再试！',
-            position: 'top',
-            toast: true,
-            timer: 2000,
-            showConfirmButton: false
-        });
-        return;
-    }
-
-    fetch("https://wxpusher.zjiecode.com/api/send/message", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            appToken: "AT_8FQFDxpI2qvtDTrQG7jUCj6aTHOjgi2W",
-            content: "您好，有人需要您挪车，请及时处理。",
-            contentType: 1,
-            uids: ["UID_AIQ8tkck5ulReU0umP6rNfOJ10lw", "UID_AIQ8tkck5ulReU0umP6rNfOJ10lw1"]
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.code === 1000) {
-            Swal.fire({
-                icon: 'success',
-                title: '通知已发送！',
-                text: '车主已收到您的通知。',
-                position: 'top',
-                toast: true,
-                timer: 2000,
-                showConfirmButton: false
-            });
-            startCountdown(60); // 启动倒计时（60秒）
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: '通知发送失败',
-                text: '请稍后重试。',
-                position: 'top',
-                toast: true,
-                timer: 2000,
-                showConfirmButton: false
-            });
-        }
-    })
-    .catch(error => {
-        console.error("Error sending notification:", error);
-        Swal.fire({
-            icon: 'error',
-            title: '网络错误',
-            text: '通知发送出错，请检查网络连接。',
-            position: 'top',
-            toast: true,
-            timer: 2000,
-            showConfirmButton: false
-        });
-    });
-}
-
-function startCountdown(seconds) {
-    const cooldownEndTime = Date.now() + seconds * 1000; // 设置倒计时结束时间
-    localStorage.setItem('cooldownEndTime', cooldownEndTime); // 存储到 localStorage
-
-    updateButtonState(cooldownEndTime);
-    countdownInterval = setInterval(() => {
-        updateButtonState(cooldownEndTime);
-    }, 1000);
-}
-
-function updateButtonState(cooldownEndTime) {
-    const remainingTime = Math.ceil((cooldownEndTime - Date.now()) / 1000);
-
-    if (remainingTime > 0) {
-        notifyButton.disabled = true;
-        notifyButton.textContent = `请稍候 ${remainingTime} 秒`;
-    } else {
-        clearInterval(countdownInterval);
-        notifyButton.disabled = false;
-        notifyButton.textContent = '通知车主挪车';
-        localStorage.removeItem('cooldownEndTime'); // 倒计时结束后清除
-    }
-}
-
-function callOwner() {
-    window.location.href = "tel:17896021990";
-}
-
-// 页面加载时检查是否需要继续倒计时
-window.onload = function () {
-    const cooldownEndTime = localStorage.getItem('cooldownEndTime');
-    if (cooldownEndTime) {
-        const remainingTime = Math.ceil((cooldownEndTime - Date.now()) / 1000);
-        if (remainingTime > 0) {
-            startCountdown(remainingTime);
-        }
-    }
-};
-</script>
+    <!-- 引入 SweetAlert2 的 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.1/dist/sweetalert2.all.min.js"></script>
+    <!-- 引入自定义脚本 -->
+    <script src="script.js"></script>
 </body>
 </html>
