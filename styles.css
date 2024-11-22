@@ -1,97 +1,80 @@
 /* 全局样式 */
-* { 
-    box-sizing: border-box; 
-    margin: 0; 
-    padding: 0; 
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
-body { 
-    font-family: 'Roboto', sans-serif; 
-    background: linear-gradient(135deg, #f6d365, #fda085); 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    height: 100vh; 
-    padding: 20px; 
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: #f0f2f5;
     color: #333;
+    padding: 10px;
 }
 
 /* 容器样式 */
-.container { 
-    background: #fff; 
-    padding: 30px 20px; 
-    border-radius: 15px; 
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); 
-    max-width: 400px; 
-    text-align: center; 
-    animation: fadeIn 1s ease-in-out; 
+.container {
+    text-align: center;
+    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    background: #fff;
 }
 
 /* 标题样式 */
-h1 { 
-    font-size: 24px; 
-    color: #4a90e2; 
-    margin-bottom: 15px; 
+#notify-title {
+    font-family: 'Roboto', Arial, sans-serif; /* 使用 Google Fonts */
+    font-size: 28px;
+    font-weight: bold;
+    color: #007bff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* 添加阴影效果 */
+    margin-bottom: 20px;
 }
 
 /* 段落样式 */
-p { 
-    font-size: 16px; 
-    color: #666; 
-    margin-bottom: 20px; 
-    line-height: 1.5; 
+p {
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: #555;
 }
 
-/* 按钮组样式 */
-.button-group { 
-    display: flex; 
-    gap: 15px; 
-    flex-wrap: wrap; 
-    justify-content: center; 
+/* 按钮样式 */
+button {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
 }
 
-/* 按钮基础样式 */
-button { 
-    flex: 1; 
-    padding: 15px; 
-    border: none; 
-    border-radius: 8px; 
-    font-size: 16px; 
-    font-weight: bold; 
-    cursor: pointer; 
-    transition: all 0.3s ease; 
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-    color: #fff; 
+.notify-btn {
+    background: #28a745;
 }
 
-/* 通知按钮样式 */
-.notify-btn { 
-    background: #4caf50; 
-}
-.notify-btn:hover { 
-    background: #45a049; 
-}
-.notify-btn:disabled { 
-    background: #c8e6c9; 
-    color: #777; 
-    cursor: not-allowed; 
+.notify-btn:hover {
+    background: #218838;
 }
 
-/* 拨打按钮样式 */
-.call-btn { 
-    background: #2196f3; 
-}
-.call-btn:hover { 
-    background: #1e88e5; 
+.call-btn {
+    background: #17a2b8;
 }
 
-/* 动画效果 */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.call-btn:hover {
+    background: #138496;
+}
+
+button:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
 }
