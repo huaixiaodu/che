@@ -83,7 +83,7 @@ function updateButtonState(cooldownEndTime) {
 
     if (remainingTime > 0) {
         notifyButton.disabled = true;
-        notifyButton.textContent = `稍候 ${remainingTime} 秒`;
+        notifyButton.textContent = ` ${remainingTime} 秒`;
     } else {
         clearInterval(countdownInterval);
         notifyButton.disabled = false;
