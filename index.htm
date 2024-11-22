@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <!-- 引入外部CSS -->
-    <link rel="stylesheet" href="styles.css">
-
-    <!-- 引入 SweetAlert2 的 CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.1/dist/sweetalert2.min.css">
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>通知车主挪车</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
 </head>
 <body>
     <div class="container">
@@ -18,10 +14,5 @@
         <button class="notify-btn" onclick="notifyOwner()">通知车主挪车</button>
         <button class="call-btn" onclick="callOwner()">拨打车主电话</button>
     </div>
-
-    <!-- 引入 SweetAlert2 的 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.1/dist/sweetalert2.all.min.js"></script>
-    <!-- 引入外部JS -->
-    <script src="script.js"></script>
 </body>
 </html>

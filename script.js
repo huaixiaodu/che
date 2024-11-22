@@ -1,35 +1,25 @@
-let lastNotifyTime = 0; // 上次通知时间（时间戳）
-let countdownTimer; // 倒计时定时器变量
-let countdown = 0; // 当前倒计时剩余秒数
-let notificationCount = 0; // 已发送通知次数
-const RESET_INTERVAL = 60 * 60 * 1000; // 每小时重置发送次数的间隔
+let lastNotifyTime = 0;  // 上次通知时间（时间戳）
+let countdownTimer;      // 倒计时定时器变量
+let countdown = 0;       // Countdown time
 
-// 初始化
+// Initialize the countdown state on page load
 window.onload = function () {
-    const currentTime = Date.now();
+    // Retrieve the stored countdown state from localStorage
+    const savedState = localStorage.getItem('countdownState');
     
-    // 从 localStorage 恢复状态
-    const savedState = JSON.parse(localStorage.getItem('notificationState') || '{}');
-    const savedLastVisitTime = parseInt(localStorage.getItem('lastVisitTime') || 0);
-    notificationCount = parseInt(localStorage.getItem('notificationCount') || 0);
-    countdown = savedState.countdown || 0;
-
-    // 如果超过 1 小时，重置发送次数
-    if (savedLastVisitTime && currentTime - savedLastVisitTime >= RESET_INTERVAL) {
-        notificationCount = 0;
-        localStorage.setItem('notificationCount', notificationCount);
+    if (savedState) {
+        const parsedState = JSON.parse(savedState);
+        countdown = parsedState.countdown;
+        
+        // If countdown is greater than 0, set the button state and start the countdown
+        if (countdown > 0) {
+            const notifyButton = document.querySelector(".notify-btn");
+            notifyButton.disabled = true;
+            startCountdown(countdown);
+        }
     }
+}
 
-    // 更新最后访问时间
-    localStorage.setItem('lastVisitTime', currentTime);
-
-    // 如果还有倒计时剩余，恢复按钮状态
-    if (countdown > 0) {
-        startCountdown(countdown);
-    }
-};
-
-// 通知车主功能
 function notifyOwner() {
     const currentTime = Date.now();
     if (currentTime - lastNotifyTime < 60 * 1000) {
@@ -45,66 +35,90 @@ function notifyOwner() {
         return;
     }
 
-    // 禁用按钮并开始倒计时
+    // Disable the button and start the countdown
     const notifyButton = document.querySelector(".notify-btn");
     notifyButton.disabled = true;
-
-    // 计算当前倒计时（初始 60 秒，每次增加 60 秒）
-    countdown = 60 + (notificationCount * 60);
-    notificationCount++; // 增加发送次数
-    localStorage.setItem('notificationCount', notificationCount);
-
-    // 启动倒计时
+    notifyButton.textContent = "重新发送（60秒）";
+    
+    countdown = 60;  // Set countdown to 60 seconds
     startCountdown(countdown);
+    
+    // Store countdown state in localStorage
+    localStorage.setItem('countdownState', JSON.stringify({ countdown: countdown }));
 
-    // 模拟通知车主
-    Swal.fire({
-        icon: 'success',
-        title: '通知已发送！',
-        text: '车主已收到您的通知。',
-        position: 'top',
-        toast: true,
-        timer: 2000,
-        showConfirmButton: false
+    // Send the notification via fetch
+    fetch("https://wxpusher.zjiecode.com/api/send/message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            appToken: "AT_8FQFDxpI2qvtDTrQG7jUCj6aTHOjgi2W",
+            content: "您好，有人需要您挪车，请及时处理。",
+            contentType: 1,
+            uids: ["UID_AIQ8tkck5ulReU0umP6rNfOJ10lw", "UID_AIQ8tkck5ulReU0umP6rNfOJ10lw1"]
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.code === 1000) {
+            Swal.fire({
+                icon: 'success',
+                title: '通知已发送！',
+                text: '车主已收到您的通知。',
+                position: 'top',
+                toast: true,
+                timer: 2000,
+                showConfirmButton: false
+            });
+            lastNotifyTime = currentTime;  // 更新最后发送时间
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: '通知发送失败',
+                text: '请稍后重试。',
+                position: 'top',
+                toast: true,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+    })
+    .catch(error => {
+        console.error("Error sending notification:", error);
+        Swal.fire({
+            icon: 'error',
+            title: '网络错误',
+            text: '通知发送出错，请检查网络连接。',
+            position: 'top',
+            toast: true,
+            timer: 2000,
+            showConfirmButton: false
+        });
     });
-
-    // 存储状态
-    localStorage.setItem(
-        'notificationState',
-        JSON.stringify({ countdown: countdown })
-    );
-    lastNotifyTime = currentTime;
-    localStorage.setItem('lastVisitTime', currentTime);
 }
 
-// 倒计时逻辑
 function startCountdown(initialCountdown) {
     const notifyButton = document.querySelector(".notify-btn");
-
-    clearInterval(countdownTimer); // 清除之前的计时器
-
+    
+    // Start the countdown timer
     countdownTimer = setInterval(() => {
         initialCountdown--;
-        countdown = initialCountdown; // 更新全局倒计时
         notifyButton.textContent = `重新发送（${initialCountdown}秒）`;
+        
+        // Update countdown state in localStorage
+        localStorage.setItem('countdownState', JSON.stringify({ countdown: initialCountdown }));
 
-        // 更新 localStorage 状态
-        localStorage.setItem(
-            'notificationState',
-            JSON.stringify({ countdown: initialCountdown })
-        );
-
-        // 倒计时结束，恢复按钮状态
+        // If countdown reaches 0, reset the button
         if (initialCountdown <= 0) {
             clearInterval(countdownTimer);
-            notifyButton.disabled = false;
-            notifyButton.textContent = "通知车主挪车";
-            localStorage.removeItem('notificationState'); // 清除倒计时状态
+            notifyButton.disabled = false; // Enable the button
+            notifyButton.textContent = "通知车主挪车"; // Reset the button text
+            
+            // Clear the stored state
+            localStorage.removeItem('countdownState');
         }
-    }, 1000);
+    }, 1000);  // Update every second
 }
 
-// 拨打车主电话
 function callOwner() {
     window.location.href = "tel:17896021990";
 }
