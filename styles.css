@@ -21,7 +21,7 @@ body {
     padding: 30px 20px; 
     border-radius: 15px; 
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); 
-    max-width: 400px; 
+    max-width: 450px; 
     text-align: center; 
     animation: fadeIn 1s ease-in-out; 
 }
