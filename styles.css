@@ -52,7 +52,7 @@ p {
 /* 按钮基础样式 */
 button { 
     flex: 1; 
-    padding: 15px; 
+    padding: 18px; 
     border: none; 
     border-radius: 8px; 
     font-size: 16px; 
