@@ -93,7 +93,16 @@ function updateButtonState(cooldownEndTime) {
 }
 
 function callOwner() {
-    window.location.href = "tel:17896021990";
+    const u = navigator.userAgent;
+    const isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; // 判断是否是 Android 终端
+    const isUc = u.indexOf('UCBrowser') > -1; // 判断是否是 UC 浏览器
+    const isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); // 判断是否是 iOS 设备
+
+    if (isIOS && !isUc) {
+        window.location.href = 'tel:17896021990';
+    } else if (isAndroid || isUc) {
+        window.location.href = 'tel:17896021990';
+    }
 }
 
 // 页面加载时检查是否需要继续倒计时
@@ -107,4 +116,10 @@ window.onload = function () {
     }
     // 绑定按钮点击事件
     notifyButton.addEventListener('click', notifyOwner);
+
+    // 绑定拨打电话的设备检测
+    const callButton = document.getElementById('call-btn');
+    if (callButton) {
+        callButton.addEventListener('click', callOwner);
+    }
 };

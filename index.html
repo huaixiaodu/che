@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>通知车主挪车</title>
 
     <!-- 引入 SweetAlert2 的 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.1/dist/sweetalert2.min.css">
@@ -15,8 +15,9 @@
         <h1>通知车主挪车</h1>
         <p>如需通知车主，请点击以下按钮</p>
         <div class="button-group">
+            <!-- 按钮添加必要的 ID 和类 -->
             <button id="notify-btn" class="notify-btn">微信通知</button>
-            <button class="call-btn" onclick="callOwner()">电话通知</button>
+            <button id="call-btn" class="call-btn">电话通知</button>
         </div>
     </div>
 
